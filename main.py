@@ -93,13 +93,11 @@ def scrape_indeed_reviews(url, pages, email, password):
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
-    options.add_argument("--disable-extensions")
-    options.add_argument("--disable-popup-blocking")
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
 
-    sign_in_to_google(driver, GOOGLE_EMAIL, GOOGLE_PASSWORD)
+    sign_in_to_google(driver, email, password)
 
     if not sign_in_to_indeed_with_google(driver):
         driver.quit()
@@ -162,14 +160,15 @@ def scrape_and_return_csv(url, pages):
     df, csv_path = scrape_indeed_reviews(url, pages, GOOGLE_EMAIL, GOOGLE_PASSWORD)
     return df, csv_path
 
-flagging_dir = "/home/ubuntu/flagged"  # Specify the directory for flagging
+
+flagging_dir = "/home/ubuntu/flagged"
 iface = gr.Interface(
     fn=scrape_and_return_csv,
     inputs=["text", "number"],
     outputs=["dataframe", "file"],
     title="Scrape Indeed Reviews",
     description="Scrape reviews from Indeed and return a CSV file",
-    flagging_dir=flagging_dir,  # Specify the flagging directory
+    flagging_dir=flagging_dir,
 )
 
 if __name__ == "__main__":
