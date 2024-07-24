@@ -162,13 +162,14 @@ def scrape_and_return_csv(url, pages):
     df, csv_path = scrape_indeed_reviews(url, pages, GOOGLE_EMAIL, GOOGLE_PASSWORD)
     return df, csv_path
 
-
+flagging_dir = "/home/ubuntu/flagged"  # Specify the directory for flagging
 iface = gr.Interface(
     fn=scrape_and_return_csv,
     inputs=["text", "number"],
     outputs=["dataframe", "file"],
     title="Scrape Indeed Reviews",
     description="Scrape reviews from Indeed and return a CSV file",
+    flagging_dir=flagging_dir,  # Specify the flagging directory
 )
 
 if __name__ == "__main__":
