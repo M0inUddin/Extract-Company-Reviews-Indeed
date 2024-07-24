@@ -1,0 +1,5 @@
+gradio
+selenium
+pandas
+webdriver-manager
+python-dotenv
