@@ -161,14 +161,12 @@ def scrape_and_return_csv(url, pages):
     return df, csv_path
 
 
-flagging_dir = "/home/ubuntu/flagged"
 iface = gr.Interface(
     fn=scrape_and_return_csv,
     inputs=["text", "number"],
     outputs=["dataframe", "file"],
     title="Scrape Indeed Reviews",
     description="Scrape reviews from Indeed and return a CSV file",
-    flagging_dir=flagging_dir,
 )
 
 if __name__ == "__main__":
