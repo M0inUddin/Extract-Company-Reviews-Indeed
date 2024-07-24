@@ -87,7 +87,7 @@ def sign_in_to_indeed_with_google(driver):
 def scrape_indeed_reviews(url, pages, email, password):
     # Initialize the Chrome driver
     options = Options()
-    options.add_argument("--start-maximized")
+    options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument('--disable-gpu')
