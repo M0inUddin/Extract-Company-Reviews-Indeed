@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 import os
 import random
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 # Load environment variables from .env file
 load_dotenv()
@@ -51,26 +53,14 @@ def sign_in_to_google(driver, email, password):
 
 
 def sign_in_to_indeed_with_google(driver):
-    driver.execute_script("window.open('https://www.indeed.com/', '_blank');")
-    random_delay()
-
-    driver.switch_to.window(driver.window_handles[-1])
+    driver.get("https://secure.indeed.com/")
     random_delay()
 
     try:
-        sign_in_button = driver.find_element(
-            By.CSS_SELECTOR, 'div[data-gnav-element-name="SignIn"] a'
+        # Wait until the Google Sign In button is clickable
+        google_sign_in_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable((By.ID, "login-google-button"))
         )
-        sign_in_button.click()
-        logging.info("Clicked the Sign In button.")
-    except Exception as e:
-        logging.error(f"Error locating or clicking the Sign In button: {e}")
-        return False
-
-    random_delay()  # Allow time for the sign in page to load
-
-    try:
-        google_sign_in_button = driver.find_element(By.ID, "login-google-button")
         google_sign_in_button.click()
         logging.info("Clicked the Google sign in button.")
     except Exception as e:
@@ -78,24 +68,13 @@ def sign_in_to_indeed_with_google(driver):
         return False
 
     random_delay(5, 10)  # Allow time for the Google sign-in window to open
-
-    # Switch to the new Google sign-in window
-    new_window_handles = driver.window_handles
-    logging.info(f"Window handles after clicking Google sign in: {new_window_handles}")
-    if len(new_window_handles) > 1:
-        driver.switch_to.window(new_window_handles[-1])
-        random_delay()
-    else:
-        logging.error("New Google sign-in window did not open.")
-        return False
-
     return True
 
 
 def scrape_indeed_reviews(url, pages, email, password):
     # Initialize the Chrome driver
     options = Options()
-    options.add_argument("--headless")
+    options.add_argument("--start-maximized")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
