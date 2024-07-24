@@ -52,7 +52,9 @@ def sign_in_to_google(driver, email, password):
 
 def sign_in_to_indeed_with_google(driver):
     driver.execute_script("window.open('https://www.indeed.com/', '_blank');")
-    driver.switch_to.window(driver.window_handles[2])
+    random_delay()
+
+    driver.switch_to.window(driver.window_handles[-1])
     random_delay()
 
     try:
@@ -78,8 +80,14 @@ def sign_in_to_indeed_with_google(driver):
     random_delay(5, 10)  # Allow time for the Google sign-in window to open
 
     # Switch to the new Google sign-in window
-    driver.switch_to.window(driver.window_handles[-1])
-    random_delay()
+    new_window_handles = driver.window_handles
+    logging.info(f"Window handles after clicking Google sign in: {new_window_handles}")
+    if len(new_window_handles) > 1:
+        driver.switch_to.window(new_window_handles[-1])
+        random_delay()
+    else:
+        logging.error("New Google sign-in window did not open.")
+        return False
 
     return True
 
@@ -90,7 +98,7 @@ def scrape_indeed_reviews(url, pages, email, password):
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.add_argument('--disable-gpu')
+    options.add_argument("--disable-gpu")
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option("useAutomationExtension", False)
